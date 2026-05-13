@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nivesh Mitra — Your Investment Advisor</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=Noto+Sans:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --green: #16a34a;
+    --green-light: #dcfce7;
+    --green-mid: #4ade80;
+    --green-dark: #14532d;
+    --amber: #d97706;
+    --amber-light: #fef3c7;
+    --blue: #1d4ed8;
+    --blue-light: #dbeafe;
+    --red: #dc2626;
+    --red-light: #fee2e2;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-500: #6b7280;
+    --gray-700: #374151;
+    --gray-900: #111827;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Noto Sans', sans-serif;
+    background: #f0fdf4;
+    color: var(--gray-900);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: white;
+    border-bottom: 1px solid var(--gray-200);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo { font-family: 'Sora', sans-serif; font-weight: 600; font-size: 1.2rem; color: var(--green); display: flex; align-items: center; gap: 8px; }
+  .logo-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; }
+  .header-badge { font-size: 11px; background: var(--green-light); color: var(--green-dark); padding: 4px 10px; border-radius: 20px; font-weight: 500; }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* ── HERO ── */
+  .hero { text-align: center; padding: 2.5rem 1rem 2rem; }
+  .hero h1 { font-family: 'Sora', sans-serif; font-size: 2rem; font-weight: 600; color: var(--gray-900); margin-bottom: .75rem; line-height: 1.2; }
+  .hero p { color: var(--gray-500); font-size: 1rem; max-width: 520px; margin: 0 auto 1.5rem; line-height: 1.6; }
+  .live-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; background: white; border: 1px solid var(--gray-200); padding: 5px 12px; border-radius: 20px; color: var(--gray-500); }
+  .live-dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+  /* ── MARKET TICKER ── */
+  .market-bar {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 1rem 1.5rem;
+    margin-bottom: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+  }
+  .market-item { text-align: center; }
+  .market-label { font-size: 11px; color: var(--gray-500); margin-bottom: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: .04em; }
+  .market-value { font-size: 1.1rem; font-weight: 600; font-family: 'Sora', sans-serif; }
+  .market-sub { font-size: 11px; color: var(--gray-500); margin-top: 2px; }
+  .up { color: var(--green); }
+  .flat { color: var(--amber); }
+  .divider { width: 1px; background: var(--gray-200); }
+
+  /* ── FORM CARD ── */
+  .form-card {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .form-card h2 { font-family: 'Sora', sans-serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 1.25rem; color: var(--gray-900); }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 13px; color: var(--gray-700); font-weight: 500; }
+  .field input, .field select {
+    padding: 10px 14px;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-family: 'Noto Sans', sans-serif;
+    color: var(--gray-900);
+    background: white;
+    transition: border-color .2s;
+    outline: none;
+  }
+  .field input:focus, .field select:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(22,163,74,.1); }
+  .field .hint { font-size: 11px; color: var(--gray-500); margin-top: 2px; }
+
+  /* ── GOALS ── */
+  .goals-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1rem; }
+  @media(max-width:600px) { .goals-grid { grid-template-columns: 1fr 1fr; } .form-grid { grid-template-columns: 1fr; } }
+  .goal-tile {
+    border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    padding: 14px 10px;
+    cursor: pointer;
+    transition: all .2s;
+    text-align: center;
+    user-select: none;
+    background: white;
+  }
+  .goal-tile:hover { border-color: var(--green); background: var(--green-light); }
+  .goal-tile.active { border-color: var(--green); background: var(--green-light); }
+  .goal-tile .emoji { font-size: 22px; margin-bottom: 6px; display: block; }
+  .goal-tile .gt-name { font-size: 12px; font-weight: 600; color: var(--gray-900); }
+  .goal-tile .gt-horizon { font-size: 10px; color: var(--gray-500); margin-top: 2px; }
+  .goal-tile.active .gt-name { color: var(--green-dark); }
+  .goal-tile.active .gt-horizon { color: var(--green); }
+
+  /* ── RISK ── */
+  .risk-row { display: flex; gap: 10px; }
+  .risk-tile {
+    flex: 1;
+    border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    padding: 12px 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: all .2s;
+    user-select: none;
+    background: white;
+  }
+  .risk-tile:hover { border-color: var(--green); }
+  .risk-tile.active { border-color: var(--green); background: var(--green-light); }
+  .risk-tile .r-icon { font-size: 18px; margin-bottom: 4px; }
+  .risk-tile .r-name { font-size: 12px; font-weight: 600; color: var(--gray-900); }
+  .risk-tile .r-desc { font-size: 10px; color: var(--gray-500); margin-top: 2px; }
+  .risk-tile.active .r-name { color: var(--green-dark); }
+
+  /* ── CTA ── */
+  .cta-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'Sora', sans-serif;
+    cursor: pointer;
+    transition: background .2s, transform .1s;
+    margin-top: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    letter-spacing: .01em;
+  }
+  .cta-btn:hover { background: #15803d; }
+  .cta-btn:active { transform: scale(.99); }
+  .cta-btn:disabled { background: var(--gray-300); cursor: not-allowed; }
+
+  /* ── LOADING ── */
+  #loading-section { display: none; text-align: center; padding: 3rem; background: white; border-radius: var(--radius); border: 1px solid var(--gray-200); }
+  .spinner { width: 40px; height: 40px; border: 3px solid var(--gray-200); border-top-color: var(--green); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 1rem; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #loading-section p { color: var(--gray-500); font-size: 14px; }
+  #loading-msg { color: var(--gray-700); font-weight: 500; font-size: 15px; margin-bottom: 6px; }
+
+  /* ── RESULTS ── */
+  #result-section { display: none; }
+  .result-hero {
+    background: linear-gradient(135deg, #14532d 0%, #15803d 100%);
+    border-radius: var(--radius);
+    padding: 1.5rem 2rem;
+    color: white;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .result-hero::after { content: '₹'; position: absolute; right: 2rem; top: 50%; transform: translateY(-50%); font-size: 8rem; font-family: 'Sora', sans-serif; opacity: .07; font-weight: 700; }
+  .result-hero h2 { font-family: 'Sora', sans-serif; font-size: 1.3rem; font-weight: 600; margin-bottom: .5rem; }
+  .result-hero p { font-size: 14px; opacity: .85; line-height: 1.6; max-width: 580px; }
+
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 1.5rem; }
+  .stat-card { background: white; border: 1px solid var(--gray-200); border-radius: var(--radius-sm); padding: 14px 16px; }
+  .stat-card .s-label { font-size: 11px; color: var(--gray-500); font-weight: 500; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px; }
+  .stat-card .s-value { font-family: 'Sora', sans-serif; font-size: 1.4rem; font-weight: 600; color: var(--gray-900); }
+  .stat-card .s-sub { font-size: 11px; color: var(--gray-500); margin-top: 3px; }
+
+  /* ── HORIZON BLOCKS ── */
+  .horizon-block { background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); overflow: hidden; margin-bottom: 1rem; }
+  .h-header { padding: 14px 1.5rem; display: flex; align-items: center; gap: 12px; }
+  .h-header.short-bg { background: var(--amber-light); }
+  .h-header.medium-bg { background: var(--blue-light); }
+  .h-header.long-bg { background: var(--green-light); }
+  .h-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .short-icon { background: rgba(217,119,6,.15); }
+  .medium-icon { background: rgba(29,78,216,.12); }
+  .long-icon { background: rgba(22,163,74,.15); }
+  .h-title { font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 600; }
+  .h-title.short-c { color: #92400e; }
+  .h-title.medium-c { color: #1e3a8a; }
+  .h-title.long-c { color: var(--green-dark); }
+  .h-sub { font-size: 12px; margin-top: 2px; }
+  .h-sub.short-c { color: var(--amber); }
+  .h-sub.medium-c { color: var(--blue); }
+  .h-sub.long-c { color: var(--green); }
+  .h-body { padding: 1.25rem 1.5rem; }
+
+  .alloc-bar { height: 8px; border-radius: 4px; display: flex; gap: 3px; margin-bottom: 1rem; overflow: hidden; }
+  .alloc-seg { height: 100%; border-radius: 3px; transition: flex .5s; }
+
+  .product-list { list-style: none; }
+  .product-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--gray-100); }
+  .product-item:last-child { border-bottom: none; }
+  .p-left { display: flex; align-items: center; gap: 10px; }
+  .p-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .p-name { font-size: 13px; font-weight: 600; color: var(--gray-900); }
+  .p-desc { font-size: 11px; color: var(--gray-500); margin-top: 1px; }
+  .p-right { text-align: right; flex-shrink: 0; }
+  .p-pct { font-size: 14px; font-weight: 600; font-family: 'Sora', sans-serif; color: var(--gray-900); }
+  .p-amount { font-size: 12px; color: var(--gray-500); }
+  .p-return { font-size: 10px; padding: 2px 7px; border-radius: 20px; margin-top: 3px; display: inline-block; font-weight: 500; }
+  .ret-safe { background: var(--green-light); color: var(--green-dark); }
+  .ret-mod { background: var(--blue-light); color: #1e3a8a; }
+  .ret-high { background: #fdf4ff; color: #6b21a8; }
+
+  .insight-box { margin-top: 12px; background: var(--gray-50); border-left: 3px solid var(--green); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 10px 14px; font-size: 12px; color: var(--gray-700); line-height: 1.6; }
+
+  /* ── TAX + FIRST STEP ── */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1rem; }
+  @media(max-width:600px) { .info-grid { grid-template-columns: 1fr; } }
+  .info-tile { background: white; border: 1px solid var(--gray-200); border-radius: var(--radius-sm); padding: 1rem 1.25rem; }
+  .info-tile .it-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+  .it-label.tax { color: var(--amber); }
+  .it-label.step { color: var(--green); }
+  .info-tile .it-body { font-size: 13px; color: var(--gray-700); line-height: 1.6; }
+
+  /* ── CHAT ── */
+  .chat-section { background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 1.5rem; margin-top: 1rem; }
+  .chat-section h3 { font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 600; margin-bottom: 1rem; color: var(--gray-900); }
+  .chat-messages { max-height: 320px; overflow-y: auto; margin-bottom: 1rem; display: flex; flex-direction: column; gap: 10px; }
+  .msg { padding: 10px 14px; border-radius: var(--radius-sm); font-size: 13px; line-height: 1.6; max-width: 88%; }
+  .msg.assistant { background: var(--gray-100); color: var(--gray-900); align-self: flex-start; border-bottom-left-radius: 3px; }
+  .msg.user { background: var(--green); color: white; align-self: flex-end; border-bottom-right-radius: 3px; }
+  .msg.loading-dots { background: var(--gray-100); align-self: flex-start; }
+  .dot-pulse { display: flex; gap: 4px; padding: 4px 0; }
+  .dot-pulse span { width: 7px; height: 7px; background: var(--gray-400); border-radius: 50%; animation: blink 1.2s infinite; }
+  .dot-pulse span:nth-child(2) { animation-delay: .2s; }
+  .dot-pulse span:nth-child(3) { animation-delay: .4s; }
+  @keyframes blink { 0%,80%,100%{opacity:.2} 40%{opacity:1} }
+  .chat-input-row { display: flex; gap: 8px; }
+  .chat-input { flex: 1; padding: 10px 14px; border: 1px solid var(--gray-300); border-radius: var(--radius-sm); font-size: 13px; font-family: 'Noto Sans', sans-serif; outline: none; }
+  .chat-input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(22,163,74,.1); }
+  .send-btn { padding: 10px 18px; background: var(--green); color: white; border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; transition: background .2s; white-space: nowrap; }
+  .send-btn:hover { background: #15803d; }
+  .send-btn:disabled { background: var(--gray-300); cursor: not-allowed; }
+  .quick-qs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .qq { font-size: 11px; padding: 5px 10px; border: 1px solid var(--green); color: var(--green); border-radius: 20px; cursor: pointer; background: white; transition: all .15s; }
+  .qq:hover { background: var(--green-light); }
+
+  /* ── RESET ── */
+  .reset-btn { display: block; margin: 2rem auto 0; background: none; border: 1px solid var(--gray-300); color: var(--gray-500); padding: 8px 20px; border-radius: 20px; font-size: 13px; cursor: pointer; transition: all .2s; }
+  .reset-btn:hover { border-color: var(--gray-500); color: var(--gray-700); }
+
+  /* ── DISCLAIMER ── */
+  .disclaimer { text-align: center; font-size: 11px; color: var(--gray-500); margin-top: 2rem; line-height: 1.7; padding: 0 1rem; }
+  .disclaimer a { color: var(--green); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-dot"></div>
+    Nivesh Mitra
+  </div>
+  <div class="header-badge">🇮🇳 Made for Bharat</div>
+</header>
+
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1>Smart Investments,<br>Simple Language</h1>
+    <p>Tell us your income and goals. We'll build a personalised investment plan using the best options available in India right now.</p>
+    <div class="live-badge">
+      <div class="live-dot"></div>
+      Live market rates — May 2026
+    </div>
+  </div>
+
+  <!-- MARKET TICKER -->
+  <div class="market-bar">
+    <div class="market-item">
+      <div class="market-label">PPF Rate</div>
+      <div class="market-value up">7.1%</div>
+      <div class="market-sub">p.a. · Tax-free · Q4 FY26</div>
+    </div>
+    <div class="divider"></div>
+    <div class="market-item">
+      <div class="market-label">Bank FD (Top)</div>
+      <div class="market-value up">7.5–8.5%</div>
+      <div class="market-sub">p.a. · Small Finance Banks</div>
+    </div>
+    <div class="divider"></div>
+    <div class="market-item">
+      <div class="market-label">Equity SIP (Avg)</div>
+      <div class="market-value up">10–14%</div>
+      <div class="market-sub">p.a. · 5 yr historical avg</div>
+    </div>
+    <div class="divider"></div>
+    <div class="market-item">
+      <div class="market-label">NPS Returns</div>
+      <div class="market-value up">9–12%</div>
+      <div class="market-sub">p.a. · Equity fund long-term</div>
+    </div>
+    <div class="divider"></div>
+    <div class="market-item">
+      <div class="market-label">RBI Repo Rate</div>
+      <div class="market-value flat">5.25%</div>
+      <div class="market-sub">Stable · Apr 2026 MPC</div>
+    </div>
+  </div>
+
+  <!-- FORM -->
+  <div id="form-section">
+
+    <div class="form-card">
+      <h2>📊 Your Financial Profile</h2>
+      <div class="form-grid">
+        <div class="field">
+          <label>Monthly Income (₹)</label>
+          <input type="number" id="income" placeholder="e.g. 35,000" min="5000" />
+          <span class="hint">Your take-home salary per month</span>
+        </div>
+        <div class="field">
+          <label>Monthly Savings (₹)</label>
+          <input type="number" id="savings" placeholder="e.g. 7,000" min="500" />
+          <span class="hint">Amount you can invest each month</span>
+        </div>
+        <div class="field">
+          <label>Age</label>
+          <input type="number" id="age" placeholder="e.g. 28" min="18" max="65" />
+        </div>
+        <div class="field">
+          <label>Dependents</label>
+          <select id="dependents">
+            <option value="0">No dependents</option>
+            <option value="1">1 person</option>
+            <option value="2">2 people</option>
+            <option value="3">3 or more</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Existing Investments</label>
+          <select id="existing">
+            <option value="none">None yet</option>
+            <option value="fd">Fixed Deposit</option>
+            <option value="ppf">PPF Account</option>
+            <option value="mf">Mutual Funds</option>
+            <option value="multiple">Multiple</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Employment Type</label>
+          <select id="employment">
+            <option value="salaried">Salaried (Private)</option>
+            <option value="govt">Government Employee</option>
+            <option value="selfemployed">Self-Employed / Business</option>
+            <option value="freelance">Freelancer / Gig Worker</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h2>🎯 Your Goals</h2>
+      <p style="font-size:13px; color:var(--gray-500); margin-bottom:1rem;">Select all that apply — we'll build a plan for each.</p>
+      <div class="goals-grid" id="goals-grid">
+        <div class="goal-tile" data-goal="emergency" onclick="toggleGoal(this)">
+          <span class="emoji">🛡️</span>
+          <div class="gt-name">Emergency Fund</div>
+          <div class="gt-horizon">Short · 0–1 year</div>
+        </div>
+        <div class="goal-tile" data-goal="vehicle" onclick="toggleGoal(this)">
+          <span class="emoji">🛵</span>
+          <div class="gt-name">Vehicle / Bike</div>
+          <div class="gt-horizon">Short · 1–3 years</div>
+        </div>
+        <div class="goal-tile" data-goal="wedding" onclick="toggleGoal(this)">
+          <span class="emoji">💍</span>
+          <div class="gt-name">Wedding</div>
+          <div class="gt-horizon">Medium · 2–5 years</div>
+        </div>
+        <div class="goal-tile" data-goal="education" onclick="toggleGoal(this)">
+          <span class="emoji">🎓</span>
+          <div class="gt-name">Children's Education</div>
+          <div class="gt-horizon">Medium · 5–10 years</div>
+        </div>
+        <div class="goal-tile" data-goal="home" onclick="toggleGoal(this)">
+          <span class="emoji">🏠</span>
+          <div class="gt-name">Buy a Home</div>
+          <div class="gt-horizon">Long · 7–15 years</div>
+        </div>
+        <div class="goal-tile" data-goal="retirement" onclick="toggleGoal(this)">
+          <span class="emoji">🌅</span>
+          <div class="gt-name">Retirement</div>
+          <div class="gt-horizon">Long · 15+ years</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h2>⚖️ Risk Comfort</h2>
+      <p style="font-size:13px; color:var(--gray-500); margin-bottom:1rem;">How comfortable are you if your investment value goes up and down slightly?</p>
+      <div class="risk-row" id="risk-row">
+        <div class="risk-tile" data-risk="conservative" onclick="selectRisk(this)">
+          <div class="r-icon">🛡️</div>
+          <div class="r-name">Safe & Steady</div>
+          <div class="r-desc">FD, PPF, RD — guaranteed returns</div>
+        </div>
+        <div class="risk-tile" data-risk="moderate" onclick="selectRisk(this)">
+          <div class="r-icon">⚖️</div>
+          <div class="r-name">Balanced</div>
+          <div class="r-desc">Mix of safe + market-linked</div>
+        </div>
+        <div class="risk-tile" data-risk="aggressive" onclick="selectRisk(this)">
+          <div class="r-icon">🚀</div>
+          <div class="r-name">Growth Focused</div>
+          <div class="r-desc">Mutual funds, ELSS, NPS equity</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="cta-btn" id="analyze-btn" onclick="analyzePlan()" disabled>
+      ✨ Generate My Investment Plan
+    </button>
+  </div>
+
+  <!-- LOADING -->
+  <div id="loading-section">
+    <div class="spinner"></div>
+    <div id="loading-msg">Analysing your financial profile...</div>
+    <p>Matching with current Indian market rates</p>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="result-section"></div>
+
+</div>
+
+<script>
+// ── STATE ──
+let selectedGoals = new Set();
+let selectedRisk = null;
+let planContext = '';
+
+// ── LIVE MARKET RATES (May 2026) ──
+const MARKET_RATES = {
+  ppf: { rate: 7.1, label: 'PPF', type: 'Government', tax: 'Tax-free (EEE)', lock: '15 years', minInvest: 500, maxInvest: 150000, riskTag: 'ret-safe', retLabel: '7.1% p.a.' },
+  rd: { rate: 6.7, label: 'Recurring Deposit (RD)', type: 'Bank', tax: 'Taxable', lock: '1–5 years', minInvest: 100, riskTag: 'ret-safe', retLabel: '6.7% p.a.' },
+  fd: { rate: 7.5, label: 'Fixed Deposit (FD)', type: 'Small Finance Bank', tax: 'Taxable', lock: '1–3 years', minInvest: 1000, riskTag: 'ret-safe', retLabel: '7.5–8.5% p.a.' },
+  liquidFund: { rate: 7.0, label: 'Liquid Mutual Fund', type: 'Mutual Fund', tax: 'STCG after 3 yrs', lock: 'None (T+1)', minInvest: 100, riskTag: 'ret-mod', retLabel: '6.5–7% p.a.' },
+  elss: { rate: 13.0, label: 'ELSS (Tax Saver MF)', type: 'Mutual Fund', tax: '80C benefit', lock: '3 years', minInvest: 500, riskTag: 'ret-high', retLabel: '12–14% p.a.' },
+  niftyIndex: { rate: 12.0, label: 'Nifty 50 Index Fund SIP', type: 'Mutual Fund', tax: 'LTCG 10% above ₹1L', lock: 'None', minInvest: 100, riskTag: 'ret-high', retLabel: '11–13% p.a.' },
+  nps: { rate: 10.5, label: 'NPS (Equity)', type: 'Government', tax: '80C + 80CCD(1B)', lock: 'Till retirement', minInvest: 500, riskTag: 'ret-high', retLabel: '9–12% p.a.' },
+  postOffice: { rate: 7.5, label: 'Post Office MIS', type: 'Government', tax: 'Taxable', lock: '5 years', minInvest: 1000, riskTag: 'ret-safe', retLabel: '7.4% p.a.' },
+  debtFund: { rate: 7.5, label: 'Debt Mutual Fund SIP', type: 'Mutual Fund', tax: 'Slab rate', lock: 'None', minInvest: 500, riskTag: 'ret-mod', retLabel: '7–8% p.a.' },
+};
+
+// ── GOAL TOGGLES ──
+function toggleGoal(el) {
+  const g = el.dataset.goal;
+  if (selectedGoals.has(g)) { selectedGoals.delete(g); el.classList.remove('active'); }
+  else { selectedGoals.add(g); el.classList.add('active'); }
+  checkReady();
+}
+function selectRisk(el) {
+  document.querySelectorAll('.risk-tile').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  selectedRisk = el.dataset.risk;
+  checkReady();
+}
+function checkReady() {
+  const income = document.getElementById('income').value;
+  const savings = document.getElementById('savings').value;
+  const age = document.getElementById('age').value;
+  const ok = income && savings && age && selectedGoals.size > 0 && selectedRisk;
+  document.getElementById('analyze-btn').disabled = !ok;
+}
+['income','savings','age'].forEach(id => document.getElementById(id).addEventListener('input', checkReady));
+
+// ── PLAN GENERATION VIA CLAUDE API ──
+async function analyzePlan() {
+  const income = +document.getElementById('income').value;
+  const savings = +document.getElementById('savings').value;
+  const age = +document.getElementById('age').value;
+  const dependents = document.getElementById('dependents').value;
+  const existing = document.getElementById('existing').value;
+  const employment = document.getElementById('employment').value;
+  const goals = Array.from(selectedGoals);
+
+  document.getElementById('form-section').style.display = 'none';
+  document.getElementById('loading-section').style.display = 'block';
+
+  const loadingMsgs = [
+    'Analysing your financial profile...',
+    'Checking current Indian market rates...',
+    'Matching PPF, FD, SIP returns to your goals...',
+    'Building your personalised plan...'
+  ];
+  let mi = 0;
+  const ticker = setInterval(() => {
+    mi = (mi + 1) % loadingMsgs.length;
+    document.getElementById('loading-msg').textContent = loadingMsgs[mi];
+  }, 1800);
+
+  const prompt = `You are a SEBI-aware financial advisor for low-to-middle income Indians. Use current May 2026 Indian market rates to build a realistic plan.
+
+CURRENT RATES (May 2026):
+- PPF: 7.1% p.a. (Q4 FY2025-26), Tax-free EEE, 15yr lock, max ₹1.5L/yr
+- Bank FD (major banks): 6–7.5% p.a. | Small Finance Banks: 7.5–8.5% p.a.
+- Liquid Mutual Funds: ~6.5–7% p.a., fully liquid T+1
+- RD (Recurring Deposit): ~6.5–7% p.a.
+- ELSS: 12–14% historical, 3yr lock, 80C benefit
+- Nifty 50 Index Fund SIP: 11–13% long-term avg
+- NPS Equity: 9–12%, 80C + extra ₹50k deduction 80CCD(1B)
+- Post Office MIS: 7.4% p.a., monthly income
+- Debt Mutual Funds: 7–8% p.a.
+- RBI Repo: 5.25% (Apr 2026)
+
+USER PROFILE:
+- Monthly income: ₹${income}
+- Monthly savings available: ₹${savings}
+- Age: ${age} years
+- Dependents: ${dependents}
+- Existing investments: ${existing}
+- Employment: ${employment}
+- Risk: ${selectedRisk}
+- Goals: ${goals.join(', ')}
+
+Respond ONLY with a single valid JSON object. No markdown, no backticks, no text outside JSON.
+
+{
+  "summary": "2 sentence personal assessment of their financial situation",
+  "savingsRate": "XX%",
+  "totalMonthlyInvest": XXXX,
+  "short_term": {
+    "label": "Short-term (0–2 years)",
+    "goal": "goal name from their selection or Emergency Fund if selected",
+    "monthlyAmount": XXXX,
+    "products": [
+      {"name": "product", "pct": XX, "color": "#hex", "desc": "why this fits — be specific", "returnRate": "X.X%", "tag": "Safe/Moderate/Growth"}
+    ],
+    "projectedValue": "₹X,XX,XXX in X years",
+    "insight": "one specific actionable tip"
+  },
+  "medium_term": {
+    "label": "Medium-term (2–7 years)",
+    "goal": "goal name",
+    "monthlyAmount": XXXX,
+    "products": [
+      {"name": "product", "pct": XX, "color": "#hex", "desc": "why", "returnRate": "X%", "tag": "Safe/Moderate/Growth"}
+    ],
+    "projectedValue": "₹X,XX,XXX in X years",
+    "insight": "actionable tip"
+  },
+  "long_term": {
+    "label": "Long-term (7+ years)",
+    "goal": "goal name",
+    "monthlyAmount": XXXX,
+    "products": [
+      {"name": "product", "pct": XX, "color": "#hex", "desc": "why", "returnRate": "X%", "tag": "Safe/Moderate/Growth"}
+    ],
+    "projectedValue": "₹XX,XX,XXX in X years",
+    "insight": "actionable tip"
+  },
+  "taxTip": "specific 80C / 80D / 80CCD tip relevant to their employment type and income",
+  "firstStep": "the single most important action this week — be very specific (app name, bank name, etc.)",
+  "emergencyTarget": "₹X,XX,XXX",
+  "sipStartNote": "specific note on starting a SIP — minimum amount, platform name"
+}
+
+Make all monthly amounts realistic and sum to no more than ₹${savings}. Use real product names. Colors: use green (#16a34a) for safe, blue (#1d4ed8) for moderate, purple (#7c3aed) for growth products.`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await response.json();
+    clearInterval(ticker);
+
+    const raw = data.content.map(c => c.text || '').join('');
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const plan = JSON.parse(clean);
+
+    planContext = `User profile: income ₹${income}, savings ₹${savings}, age ${age}, goals: ${goals.join(', ')}, risk: ${selectedRisk}. Their plan: short-term goal is ${plan.short_term.goal} with ₹${plan.short_term.monthlyAmount}/month, medium-term is ${plan.medium_term.goal} with ₹${plan.medium_term.monthlyAmount}/month, long-term is ${plan.long_term.goal} with ₹${plan.long_term.monthlyAmount}/month. Current rates: PPF 7.1%, FD 7.5-8.5%, ELSS 12-14%, NPS 9-12%, Nifty SIP 11-13%.`;
+
+    renderPlan(plan, income, savings, age);
+
+  } catch(err) {
+    clearInterval(ticker);
+    document.getElementById('loading-section').style.display = 'none';
+    document.getElementById('result-section').style.display = 'block';
+    document.getElementById('result-section').innerHTML = `
+      <div class="form-card" style="text-align:center; padding:3rem;">
+        <div style="font-size:2rem; margin-bottom:1rem;">⚠️</div>
+        <div style="font-weight:600; margin-bottom:.5rem;">Could not connect to advisor</div>
+        <div style="color:var(--gray-500); font-size:13px; margin-bottom:1.5rem;">Please check your internet connection and try again.</div>
+        <button class="cta-btn" style="max-width:200px; margin:0 auto;" onclick="location.reload()">Try Again</button>
+      </div>`;
+  }
+}
+
+function renderPlan(plan, income, savings, age) {
+  document.getElementById('loading-section').style.display = 'none';
+  document.getElementById('result-section').style.display = 'block';
+
+  const horizons = [
+    { data: plan.short_term, bg: 'short-bg', ic: 'short-icon', tc: 'short-c', emoji: '⚡' },
+    { data: plan.medium_term, bg: 'medium-bg', ic: 'medium-icon', tc: 'medium-c', emoji: '📈' },
+    { data: plan.long_term, bg: 'long-bg', ic: 'long-icon', tc: 'long-c', emoji: '🌱' },
+  ];
+
+  const horizonHTML = horizons.map(h => {
+    const products = h.data.products || [];
+    const bar = products.map(p => `<div class="alloc-seg" style="flex:${p.pct}; background:${p.color};"></div>`).join('');
+    const items = products.map(p => {
+      const amt = Math.round((p.pct / 100) * h.data.monthlyAmount);
+      const tagClass = p.tag === 'Safe' ? 'ret-safe' : p.tag === 'Growth' ? 'ret-high' : 'ret-mod';
+      return `
+        <li class="product-item">
+          <div class="p-left">
+            <div class="p-dot" style="background:${p.color};"></div>
+            <div>
+              <div class="p-name">${p.name}</div>
+              <div class="p-desc">${p.desc}</div>
+            </div>
+          </div>
+          <div class="p-right">
+            <div class="p-pct">${p.pct}%</div>
+            <div class="p-amount">₹${amt.toLocaleString('en-IN')}/mo</div>
+            <span class="p-return ${tagClass}">${p.returnRate} · ${p.tag}</span>
+          </div>
+        </li>`;
+    }).join('');
+
+    return `
+      <div class="horizon-block">
+        <div class="h-header ${h.bg}">
+          <div class="h-icon ${h.ic}">${h.emoji}</div>
+          <div>
+            <div class="h-title ${h.tc}">${h.data.label} — ${h.data.goal}</div>
+            <div class="h-sub ${h.tc}">₹${Number(h.data.monthlyAmount).toLocaleString('en-IN')}/month · Projected: ${h.data.projectedValue}</div>
+          </div>
+        </div>
+        <div class="h-body">
+          <div class="alloc-bar">${bar}</div>
+          <ul class="product-list">${items}</ul>
+          <div class="insight-box">💡 ${h.data.insight}</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  const quickQs = [
+    'How do I open a PPF account?',
+    'What is ELSS and how to invest?',
+    'How to start my first SIP?',
+    'Explain NPS for my retirement',
+  ];
+  const qqHTML = quickQs.map(q => `<button class="qq" onclick="sendQuickQ('${q}')">${q}</button>`).join('');
+
+  document.getElementById('result-section').innerHTML = `
+    <div class="result-hero">
+      <h2>Your Personalised Investment Plan is Ready 🎉</h2>
+      <p>${plan.summary}</p>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="s-label">Monthly savings</div>
+        <div class="s-value">₹${Number(savings).toLocaleString('en-IN')}</div>
+        <div class="s-sub">${plan.savingsRate} of income</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">Total to invest</div>
+        <div class="s-value">₹${Number(plan.totalMonthlyInvest).toLocaleString('en-IN')}</div>
+        <div class="s-sub">across all 3 horizons</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">Emergency target</div>
+        <div class="s-value" style="font-size:1.1rem;">${plan.emergencyTarget}</div>
+        <div class="s-sub">3–6 months of expenses</div>
+      </div>
+      <div class="stat-card">
+        <div class="s-label">Retirement age</div>
+        <div class="s-value">${60 - age} yrs left</div>
+        <div class="s-sub">Time is your biggest asset</div>
+      </div>
+    </div>
+
+    ${horizonHTML}
+
+    <div class="info-grid">
+      <div class="info-tile">
+        <div class="it-label tax">💰 Tax Saving Tip</div>
+        <div class="it-body">${plan.taxTip}</div>
+      </div>
+      <div class="info-tile">
+        <div class="it-label step">✅ Your First Step This Week</div>
+        <div class="it-body">${plan.firstStep}</div>
+      </div>
+    </div>
+
+    <div class="info-tile" style="margin-bottom:1rem;">
+      <div class="it-label" style="color:var(--blue);">📱 SIP Starting Note</div>
+      <div class="it-body">${plan.sipStartNote}</div>
+    </div>
+
+    <div class="chat-section">
+      <h3>💬 Ask the Advisor Anything</h3>
+      <div class="quick-qs">${qqHTML}</div>
+      <div class="chat-messages" id="chat-messages">
+        <div class="msg assistant">Hi! I've just prepared your investment plan. Ask me anything about it — how to get started, what each product means, or how to open an account. I'm here to help! 😊</div>
+      </div>
+      <div class="chat-input-row">
+        <input class="chat-input" id="chat-input" type="text" placeholder="Ask something, e.g. 'How do I start a SIP?'" onkeydown="if(event.key==='Enter') sendChat()" />
+        <button class="send-btn" id="send-btn" onclick="sendChat()">Send →</button>
+      </div>
+    </div>
+
+    <button class="reset-btn" onclick="location.reload()">← Start Over</button>
+
+    <div class="disclaimer">
+      This tool is for <strong>educational purposes only</strong> and does not constitute financial advice.<br>
+      All rates are indicative as of May 2026. Please consult a <a href="https://www.sebi.gov.in" target="_blank">SEBI-registered</a> financial advisor before investing.<br>
+      Past returns are not a guarantee of future performance.
+    </div>`;
+}
+
+// ── CHAT ──
+async function sendQuickQ(q) {
+  document.getElementById('chat-input').value = q;
+  sendChat();
+}
+
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const sendBtn = document.getElementById('send-btn');
+  const msg = input.value.trim();
+  if (!msg) return;
+
+  const container = document.getElementById('chat-messages');
+  container.innerHTML += `<div class="msg user">${escHtml(msg)}</div>`;
+  input.value = '';
+  sendBtn.disabled = true;
+
+  const dotId = 'dots-' + Date.now();
+  container.innerHTML += `<div class="msg loading-dots" id="${dotId}"><div class="dot-pulse"><span></span><span></span><span></span></div></div>`;
+  container.scrollTop = container.scrollHeight;
+
+  const systemPrompt = `You are Nivesh Mitra, a friendly Indian financial advisor. Context about this user: ${planContext}. Answer in simple English (2–4 sentences max). Be specific, practical, and encouraging. Reference actual Indian apps, banks, or schemes when relevant (e.g. Groww, Zerodha, SBI, HDFC, PhonePe, Paytm Money, NSDL for NPS).`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 300,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: msg }]
+      })
+    });
+    const data = await res.json();
+    const reply = data.content.map(c => c.text || '').join('').trim();
+    document.getElementById(dotId).remove();
+    container.innerHTML += `<div class="msg assistant">${escHtml(reply)}</div>`;
+  } catch(e) {
+    document.getElementById(dotId).remove();
+    container.innerHTML += `<div class="msg assistant">Sorry, I couldn't connect right now. Please try again in a moment.</div>`;
+  }
+
+  sendBtn.disabled = false;
+  container.scrollTop = container.scrollHeight;
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>
